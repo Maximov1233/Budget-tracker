@@ -107,6 +107,22 @@ const init = () => {
     return finalArr;
   }
 
+  const categoriesList = document.querySelector('.budget-list ul');
+
+  categoriesArr.forEach((category) => { // creates the list of categories to left of chart
+    let arr = getPercentages(),
+    percentage = 0;
+    arr.forEach((item) => {
+      if (item.category === category) percentage = item.percentage;
+    });
+    let li = document.createElement('li');
+    li.id = category;
+    let style = li.style;
+    style.setProperty('--listColor', getCategoryColor(category));
+    li.innerHTML = `${category} - ${percentage}%`;
+    categoriesList.appendChild(li);
+  });
+
   let categories = getPercentages();
 
   const getRotationData = () => { // gathers information about rotating the segments as categories
@@ -133,22 +149,11 @@ const init = () => {
     for (let i = 0; i < categories.length; i++) {
       let category = document.createElement('div');
       category.className = 'category';
-      category.innerHTML = `
-          <div class="category-wrap">
-            <div class="category-percentage">
-              <p>${categories[i].percentage}%</p>
-            </div>
-            <div class="category-name">
-              <p>${categories[i].category}</p>
-            </div>
-          </div>
-      `;
       category.style.background = `
       conic-gradient(${categories[i].color} ${categories[i].percentage}%, transparent 0)
       `;
       if (i !== 0) {
         category.style.transform = `rotate(${getRotationData()[i - 1] * 3.6}deg)`;
-        category.childNodes[1].style.transform = `rotate(-${getRotationData()[i - 1] * 3.6}deg)`;
       }
       budgetPieCategories.appendChild(category);
     }
@@ -197,7 +202,7 @@ const init = () => {
       transactionsArr.push(newData);
       localStorage.removeItem('transactions');
       localStorage.setItem('transactions', JSON.stringify(transactionsArr));
-      console.log(localStorage); 
+      categoriesList.innerHTML = '';
       addPopup.classList.toggle('closed');
       alert('Transaction has been added');
       init();

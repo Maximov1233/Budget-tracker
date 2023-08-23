@@ -8,14 +8,41 @@ html {
   font-size: 16px;
 }
 
+ul li {
+  list-style: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+ul li::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background-color: var(--listColor);
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
 body .container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 body .container .budget {
+  display: flex;
+  justify-content: space-between;
   margin-top: 50px;
   text-align: center;
+}
+body .container .budget-menu {
+  margin-right: 300px;
+  text-align: left;
+}
+body .container .budget-menu p {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 body .container .budget-pie {
   width: 500px;
@@ -36,6 +63,7 @@ body .container .budget-pie__categories .category {
   width: 500px;
   height: 500px;
   border-radius: 50%;
+  border: 1px solid #333;
   text-align: center;
   color: #fff;
   position: absolute;
@@ -52,6 +80,7 @@ body .container .budget-pie__date {
   height: 200px;
   background-color: #fff;
   border-radius: 50%;
+  border: 1px solid #333;
   display: flex;
   justify-content: center;
   align-items: center;
