@@ -19,6 +19,12 @@ export let transactionsArr = [
         date: '12/08/2023',
         comment: ''
     },
+    {
+        category: 'Maintenance',
+        amount: 2000,
+        date: '13/08/2023',
+        comment: ''
+    },
     // {
     //     category: 'Mortgage',
     //     amount: 10000,

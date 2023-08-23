@@ -103,6 +103,21 @@ body .container .add-popup {
   top: 20%;
   right: 10%;
 }
+body .container .category-popup {
+  width: 400px;
+  height: auto;
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid #333;
+  position: absolute;
+  top: 200px;
+  right: 320px;
+}
+body .container .category-popup .transaction {
+  padding: 7px;
+  border: 1px solid #002233;
+  margin-bottom: 5px;
+}
 body .container .closed {
   display: none;
 }/*# sourceMappingURL=main.css.map */

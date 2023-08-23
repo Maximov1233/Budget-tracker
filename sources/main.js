@@ -1,21 +1,23 @@
 import { transactionsArr as dataArr, findCategories } from "./data.js";
 
 if (!localStorage.transactions) localStorage.setItem('transactions', JSON.stringify(dataArr));
-// findCategories();
 
 let transactionsArr = JSON.parse(localStorage.getItem('transactions'));
 
 // console.log(JSON.parse(hui));
 
 const init = () => {
+  
   let categoriesArr = findCategories();
 
   const categorizeFunc = () => { // creates subarrays into other array with same types of categories
     let outerArr = [];
+
     for (let i = 0; i < categoriesArr.length; i++) {
       let subArr = [];
       for (let j = 0; j < transactionsArr.length; j++) {
-        if (transactionsArr[j].category === categoriesArr[i]) {
+        let transactionMatchesCategory = transactionsArr[j].category === categoriesArr[i];
+        if (transactionMatchesCategory) {
           subArr.push(transactionsArr[j]);
         }
       }
@@ -98,7 +100,8 @@ const init = () => {
     if (checkPercentage !== 100) {
       let remainingPercentage = 100 - checkPercentage;
       finalArr.forEach((data) => {
-        if (data.amount === biggestAmount(finalArr)) {
+        let theBiggestAmountOfCategories = data.amount === biggestAmount(finalArr);
+        if (theBiggestAmountOfCategories) {
           data.percentage += remainingPercentage;
         }
       });
@@ -125,33 +128,70 @@ const init = () => {
 
   const categoriesDOM = categoriesList.querySelectorAll('li');
 
-  categoriesDOM.forEach((category) => { // tracks the click and sets the font-size and opacity of pie elements
-    category.addEventListener('click', () => {
-      const categoriesPie = document.querySelectorAll('.category');
+  const categoryPopup = document.querySelector('.category-popup');
 
-      const refresh = () => {
-        categoriesPie.forEach((item) => item.style.opacity = '1');
-        categoriesDOM.forEach((category) => {
-          category.classList.remove('clicked');
-          category.style.fontSize = '18px';
-        });
-      }
+  const categoriesDOMBuild = () => {
+    for (let i = 0; i < categoriesDOM.length; i++) { // tracks the click and sets the font-size and opacity of pie elements
+      categoriesDOM[i].addEventListener('click', () => {
+        const categoriesPie = document.querySelectorAll('.category');
 
-      if (category.classList.contains('clicked')) {
-        refresh();
-      } else {
-        refresh();
-        category.classList.add('clicked');
-        category.style.fontSize = '20px';
+        const refresh = () => {
+          categoriesPie.forEach((item) => item.style.opacity = '1');
+          categoriesDOM.forEach((category) => {
+            category.classList.remove('clicked');
+            category.style.fontSize = '18px';
+            categoryPopup.classList.add('closed');
+            categoryPopup.innerHTML = ''; 
+          });
+        }
 
-        categoriesPie.forEach((item) => {
-          if (!item.classList.contains(category.id)) {
-            item.style.opacity = '0.3';
-          }
-        });
-      }
-    });
-  });
+        let categoryIsClicked = categoriesDOM[i].classList.contains('clicked');
+
+        if (categoryIsClicked) {
+          refresh();
+        } else {
+          refresh();
+          
+          categoriesDOM[i].classList.add('clicked');
+          categoriesDOM[i].style.fontSize = '20px';
+
+          // console.log(categorizedArr[i]);
+          categoriesPie.forEach((item) => {
+            let itemNotClicked = !item.classList.contains(categoriesDOM[i].id);
+            if (itemNotClicked) {
+              item.style.opacity = '0.3';
+            } else {
+              let ourItem = categorizeFunc()[i];
+              console.log(ourItem);
+
+              ourItem.forEach((item) => {
+                let transaction = document.createElement('div');
+                transaction.className = 'transaction';
+                transaction.innerHTML = `
+                  <div class="transaction-category">Category: ${item.category}</div>
+                  <div class="transaction-amount">Amount: ${item.amount}</div>
+                  <div class="transaction-date">Date: ${item.date}</div>
+                  <div class="transaction-comment">Comment: ${item.comment}</div>
+                `;
+                categoryPopup.classList.remove('closed');
+                categoryPopup.appendChild(transaction);
+              });
+              
+              // categorizeFunc().forEach((item) => {
+              //   console.log(item);
+              //   item.forEach((subItem) => {
+              //     if (subItem.category === categoriesDOM[i].id) return item;
+              //   });
+                // if (categoriesDOM[i].id === item.category) console.log(item);
+              // });
+            }
+          });
+        }
+      });
+    }
+  }
+
+  categoriesDOMBuild();
 
   let categories = getPercentages();
 
@@ -182,7 +222,10 @@ const init = () => {
       category.style.background = `
       conic-gradient(${categories[i].color} ${categories[i].percentage}%, transparent 0)
       `;
-      if (i !== 0) {
+
+      let notFirstCategory = i !== 0;
+
+      if (notFirstCategory) {
         category.style.transform = `rotate(${getRotationData()[i - 1] * 3.6}deg)`;
       }
       budgetPieCategories.appendChild(category);

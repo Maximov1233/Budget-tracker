@@ -49,10 +49,6 @@ body {
                 }
             }
 
-            // &-window {
-                
-            // }
-
             &-pie {
                 width: 500px;
                 height: 500px;
@@ -120,6 +116,23 @@ body {
             position: absolute;
             top: 20%;
             right: 10%;
+        }
+
+        .category-popup {
+            width: 400px;
+            height: auto;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #333;
+            position: absolute;
+            top: 200px;
+            right: 320px;
+
+            .transaction {
+                padding: 7px;
+                border: 1px solid #023f;
+                margin-bottom: 5px;
+            }
         }
 
         .closed {
