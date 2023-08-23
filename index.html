@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Tracker</title>
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <div class="budget">
+            <div class="budget-pie">
+                <div class="budget-pie__categories">
+                </div>
+                <div class="budget-pie__date">
+                    <p></p>
+                </div>
+            </div>
+            <div class="budget-add">
+                <button>Add value</button>
+            </div>
+        </div>
+        <div class="add-popup closed">
+            <div class="category-selection">
+                <select id="categorySelect"></select>
+            </div>
+            <div class="category-value">
+                <input type="number" placeholder="Write the amount" required>
+            </div>
+            <div class="category-info">
+                <input type="text" placeholder="Add comment (optionally)">
+            </div>
+            <div class="category-submit">
+                <button>Submit</button>
+            </div>
+        </div>
+    </div>
+    <script src="./sources/main.js" type="module"></script>
+    <!-- <script src="./sources/data.js"></script> -->
+</body>
+</html>

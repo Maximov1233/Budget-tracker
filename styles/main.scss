@@ -1,0 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .budget {
+            margin-top: 50px;
+            text-align: center;
+
+            &-pie {
+                width: 500px;
+                height: 500px;
+                border-radius: 50%;
+                background-color: #023f;
+                position: relative;
+                margin-bottom: 50px;
+                
+
+                &__categories {
+                    width: 500px;
+                    height: 500px;
+                    border-radius: 50%;
+                    position: relative;
+                    overflow: hidden;
+
+                    .category {
+                        width: 500px;
+                        height: 500px;
+                        border-radius: 50%;
+                        text-align: center;
+                        color: #fff;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+
+                        &-wrap {
+                            margin-top: 50px;
+                            margin-left: 100px;
+                            cursor: default;
+                        }
+                    }
+                }
+
+                &__date {
+                    width: 200px;
+                    height: 200px;
+                    background-color: #fff;
+                    border-radius: 50%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: 20px;
+                }
+            }
+
+            &-add {
+                button {
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    background-color: #023f;
+                    border: none;
+                    outline: none;
+                    color: white;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .add-popup {
+            width: 300px;
+            height: 500px;
+            background-color: #fff;
+            border: 1px solid grey;
+            position: absolute;
+            top: 20%;
+            right: 10%;
+        }
+
+        .closed {
+            display: none;
+        }
+    }
+}
