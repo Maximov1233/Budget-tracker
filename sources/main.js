@@ -1,4 +1,4 @@
-import {transactionsArr as dataArr, findCategories} from "./data.js";
+import { transactionsArr as dataArr, findCategories } from "./data.js";
 
 if (!localStorage.transactions) localStorage.setItem('transactions', JSON.stringify(dataArr));
 // findCategories();
@@ -111,7 +111,7 @@ const init = () => {
 
   categoriesArr.forEach((category) => { // creates the list of categories to left of chart
     let arr = getPercentages(),
-    percentage = 0;
+      percentage = 0;
     arr.forEach((item) => {
       if (item.category === category) percentage = item.percentage;
     });
@@ -121,6 +121,36 @@ const init = () => {
     style.setProperty('--listColor', getCategoryColor(category));
     li.innerHTML = `${category} - ${percentage}%`;
     categoriesList.appendChild(li);
+  });
+
+  const categoriesDOM = categoriesList.querySelectorAll('li');
+
+  categoriesDOM.forEach((category) => { // tracks the click and sets the font-size and opacity of pie elements
+    category.addEventListener('click', () => {
+      const categoriesPie = document.querySelectorAll('.category');
+
+      const refresh = () => {
+        categoriesPie.forEach((item) => item.style.opacity = '1');
+        categoriesDOM.forEach((category) => {
+          category.classList.remove('clicked');
+          category.style.fontSize = '18px';
+        });
+      }
+
+      if (category.classList.contains('clicked')) {
+        refresh();
+      } else {
+        refresh();
+        category.classList.add('clicked');
+        category.style.fontSize = '20px';
+
+        categoriesPie.forEach((item) => {
+          if (!item.classList.contains(category.id)) {
+            item.style.opacity = '0.3';
+          }
+        });
+      }
+    });
   });
 
   let categories = getPercentages();
@@ -148,7 +178,7 @@ const init = () => {
   const categoryFill = (categories) => { // creates div element of category and puts it into html
     for (let i = 0; i < categories.length; i++) {
       let category = document.createElement('div');
-      category.className = 'category';
+      category.className = `category ${categories[i].category}`;
       category.style.background = `
       conic-gradient(${categories[i].color} ${categories[i].percentage}%, transparent 0)
       `;
@@ -189,8 +219,6 @@ const init = () => {
     let newTime = new Intl.DateTimeFormat('en-UK', { // writes the current date
       dateStyle: 'short'
     }).format(new Date());
-
-    console.log(newTime);
 
     if (amountInput) {
       let newData = {

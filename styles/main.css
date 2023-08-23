@@ -70,11 +70,6 @@ body .container .budget-pie__categories .category {
   top: 0;
   left: 0;
 }
-body .container .budget-pie__categories .category-wrap {
-  margin-top: 50px;
-  margin-left: 100px;
-  cursor: default;
-}
 body .container .budget-pie__date {
   width: 200px;
   height: 200px;

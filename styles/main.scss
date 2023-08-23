@@ -35,7 +35,6 @@ body {
         .budget {
             display: flex;
             justify-content: space-between;
-            // align-items: center;
             margin-top: 50px;
             text-align: center;
 
@@ -50,9 +49,9 @@ body {
                 }
             }
 
-            &-window {
+            // &-window {
                 
-            }
+            // }
 
             &-pie {
                 width: 500px;
@@ -80,12 +79,6 @@ body {
                         position: absolute;
                         top: 0;
                         left: 0;
-
-                        &-wrap {
-                            margin-top: 50px;
-                            margin-left: 100px;
-                            cursor: default;
-                        }
                     }
                 }
 
