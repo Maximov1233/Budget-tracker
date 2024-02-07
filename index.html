@@ -5,18 +5,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles/main.css">
 </head>
 
 <body>
-    <div class="container">
+    <header class="header">
+        <div class="container">
+            <div class="header-nav">
+                <div class="header-nav__left">
+                    <ul>
+                        <li>Overview</li>
+                        <li>Transactions</li>
+                        <li>Reports</li>
+                        <li>Budgets</li>
+                        <li>Goals</li>
+                    </ul>
+                </div>
+                <div class="header-nav__right">
+                    <div class="profile-text">
+                        <p class="full-name">Maxim Matukhno</p>
+                        <p class="occupation">Front-end developer</p>
+                    </div>
+                    <div class="profile-photo">
+                        <!-- <img src="./img/profile-photo.png" alt=""> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
         <div class="budget">
+            <div class="container">
             <div class="budget-menu">
-                <div class="budget-list">
+                <div class="budget-menu__list">
                     <p>Categories</p>
                     <ul>
-    
+
                     </ul>
+                </div>
+                <div class="budget-menu__add">
+                    <button>Add category</button>
                 </div>
             </div>
             <div class="budget-window">
@@ -28,28 +58,57 @@
                     </div>
                 </div>
                 <div class="budget-add">
-                    <button>Add value</button>
+                    <button type="submit">Add value</button>
                 </div>
             </div>
+            <div class="budget-transactions">
+                <div class="budget-transaction__sum">
+                    <p></p>
+                </div>
+                <div class="budget-transactions__list">
+                    
+                </div>
+            </div>
+            </div>
         </div>
-        <div class="add-popup closed">
+        <div class="add-transaction-popup closed">
             <div class="category-selection">
                 <select id="categorySelect"></select>
             </div>
             <div class="category-value">
-                <input type="number" placeholder="Write the amount" required>
+                <input type="number" min="0" placeholder="Write the amount" required>
             </div>
             <div class="category-info">
                 <input type="text" placeholder="Add comment (optionally)">
+            </div>
+            <div class="category-date">
+                <input type="date" lang="en-UK">
             </div>
             <div class="category-submit">
                 <button>Submit</button>
             </div>
         </div>
         <div class="category-popup closed">
-            
+            <div class="category-popup__list">
+
+            </div>
+            <div class="category-popup__sort">
+                <p>Sort by:</p>
+                <select id="categoryPopupSort">
+                    <option value="amount">Amount (from lowest to highest)</option>
+                    <option value="amount">Date (from oldest to newest)</option>
+                </select>
+                <button type="submit">Sort</button>
+            </div>
         </div>
-    </div>
+        <div class="categories-selection-popup closed">
+            <p>Choose your preferred categories:</p>
+            <div class="categories-selection__list"></div>
+            <div class="categories-selection__button">
+                <button>Add categories</button>
+            </div>
+
+        </div>
     <script src="./sources/main.js" type="module"></script>
     <!-- <script src="./sources/data.js"></script> -->
 </body>

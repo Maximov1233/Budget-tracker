@@ -8,12 +8,25 @@ html {
   font-size: 16px;
 }
 
-ul li {
-  list-style: none;
+button {
+  font-family: "Poppins", sans-serif;
   cursor: pointer;
+}
+
+ul {
+  list-style: none;
   font-size: 18px;
 }
-ul li::before {
+ul li {
+  cursor: pointer;
+}
+
+.container {
+  max-width: 1400px;
+  margin: auto;
+}
+
+.budget-menu__list ul li::before {
   content: "";
   display: inline-block;
   width: 7px;
@@ -24,53 +37,124 @@ ul li::before {
   vertical-align: middle;
 }
 
-body .container {
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #E6E9F2;
+}
+body .header {
+  padding-top: 50px;
+}
+body .header .container {
+  display: block;
+}
+body .header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body .header-nav__left ul {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 50px;
 }
-body .container .budget {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 50px;
+body .header-nav__left ul li {
   text-align: center;
+  margin-right: 20px;
+  border-bottom: 2px solid transparent;
+  padding: 20px 0;
 }
-body .container .budget-menu {
-  margin-right: 300px;
+body .header-nav__left ul li:hover {
+  border-color: #3544CF;
+}
+body .header-nav__right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: right;
+}
+body .header-nav__right .profile-text {
+  font-size: 14px;
+  margin-right: 10px;
+}
+body .header-nav__right .profile-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #3544CF;
+}
+body .container {
+  display: flex;
+}
+body .budget {
+  padding-top: 20px;
+  min-height: 1000px;
+  background-color: #fff;
+}
+body .budget-menu {
+  display: flex;
+  justify-content: center;
+  margin-right: 100px;
   text-align: left;
 }
-body .container .budget-menu p {
+body .budget-menu__list {
+  margin-right: 5px;
+}
+body .budget-menu__list ul li {
+  min-width: 200px;
+}
+body .budget-menu__list p {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
 }
-body .container .budget-pie {
+body .budget-menu__add {
+  cursor: pointer;
+}
+body .budget-menu__add button {
+  padding: 5px 10px;
+  border: 1px solid #7f4;
+  border-radius: 4px;
+  background: none;
+  outline: none;
+  font-size: 16px;
+}
+body .budget-window {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+body .budget-pie {
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background-color: #002233;
   position: relative;
-  margin-bottom: 50px;
+  margin-right: 20px;
+  margin-bottom: 20px;
 }
-body .container .budget-pie__categories {
+body .budget-pie__categories {
   width: 500px;
   height: 500px;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
 }
-body .container .budget-pie__categories .category {
+body .budget-pie__categories .category {
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  border: 1px solid #333;
   text-align: center;
   color: #fff;
   position: absolute;
   top: 0;
   left: 0;
 }
-body .container .budget-pie__date {
+body .budget-pie__date {
   width: 200px;
   height: 200px;
   background-color: #fff;
@@ -85,7 +169,7 @@ body .container .budget-pie__date {
   transform: translate(-50%, -50%);
   font-size: 20px;
 }
-body .container .budget-add button {
+body .budget-add button {
   padding: 10px 20px;
   border-radius: 5px;
   background-color: #002233;
@@ -94,7 +178,7 @@ body .container .budget-add button {
   color: white;
   cursor: pointer;
 }
-body .container .add-popup {
+body .add-transaction-popup {
   width: 300px;
   height: 500px;
   background-color: #fff;
@@ -103,7 +187,7 @@ body .container .add-popup {
   top: 20%;
   right: 10%;
 }
-body .container .category-popup {
+body .category-popup {
   width: 400px;
   height: auto;
   padding: 5px;
@@ -112,12 +196,44 @@ body .container .category-popup {
   position: absolute;
   top: 200px;
   right: 320px;
+  display: flex;
+  justify-content: space-between;
 }
-body .container .category-popup .transaction {
+body .category-popup .transaction {
   padding: 7px;
   border: 1px solid #002233;
   margin-bottom: 5px;
 }
-body .container .closed {
+body .transaction {
+  padding: 7px;
+  border: 1px solid #002233;
+  margin-bottom: 5px;
+}
+body .transaction-delete button {
+  color: #fff;
+  border: none;
+  outline: none;
+  min-width: 100%;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background-color: #3544CF;
+}
+body .categories-selection-popup {
+  width: 300px;
+  height: auto;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #002233;
+  position: absolute;
+  top: 100px;
+  left: 50px;
+}
+body .categories-selection-popup .categories-selection__list .category {
+  display: flex;
+}
+body .categories-selection-popup .categories-selection__list .category p {
+  margin-right: 5px;
+}
+body .closed {
   display: none;
 }/*# sourceMappingURL=main.css.map */
