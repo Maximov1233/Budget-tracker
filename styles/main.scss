@@ -8,7 +8,7 @@ html {
     font-size: 16px;
 }
 
-button {
+button, select, input {
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
 }
@@ -25,6 +25,10 @@ ul {
 .container {
     max-width: 1400px;
     margin: auto;
+}
+
+.wrap {
+    position: relative;
 }
 
 .budget-menu__list ul li {
@@ -44,9 +48,10 @@ ul {
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #E6E9F2;
+    position: relative;
 
     .header {
+        background-color: #E6E9F2;
         padding-top: 50px;
 
         .container {
@@ -114,7 +119,7 @@ body {
 
     .budget {
         padding-top: 20px;
-        min-height: 1000px;
+        // min-height: 1000px;
         // display: flex;
         // justify-content: space-between;
         // margin-top: 50px;
@@ -122,8 +127,6 @@ body {
         background-color: #fff;
         // display: flex;
         // flex-direction: column;
-
-
 
         &-menu {
             display: flex;
@@ -148,6 +151,7 @@ body {
             }
 
             &__add {
+                min-width: 150px;
                 cursor: pointer;
 
                 button {
@@ -178,6 +182,7 @@ body {
             position: relative;
             margin-right: 20px;
             margin-bottom: 20px;
+            text-align: center;
 
 
             &__categories {
@@ -207,6 +212,7 @@ body {
                 border-radius: 50%;
                 border: 1px solid #333;
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 position: absolute;
@@ -214,12 +220,28 @@ body {
                 left: 50%;
                 transform: translate(-50%, -50%);
                 font-size: 20px;
+                box-shadow: 0px 1px 20px 0px #584e4e;
             }
         }
 
-        // &-transactions {
-        //     min-width: 250px;
-        // }
+        &-transactions {
+            &__sum {
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            &__add {
+                button {
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    background-color: #023f;
+                    border: none;
+                    outline: none;
+                    color: white;
+                    cursor: pointer;
+                }
+            }
+        }
 
         &-add {
             button {
@@ -235,38 +257,57 @@ body {
     }
 
     .add-transaction-popup {
-        width: 300px;
-        height: 500px;
+        // width: 300px;
+        // height: 500px;
         background-color: #fff;
-        border: 1px solid grey;
+        // border: 1px solid grey;
         position: absolute;
-        top: 20%;
-        right: 10%;
-    }
+        // margin-left: auto;
+        // margin-right: -50%;
+        // left: 0;
+        // right: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
 
-    .category-popup {
-        width: 400px;
-        height: auto;
-        padding: 5px;
-        background-color: #fff;
-        border: 1px solid #333;
-        position: absolute;
-        top: 200px;
-        right: 320px;
-        display: flex;
-        justify-content: space-between;
+        div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-        .transaction {
-            padding: 7px;
-            border: 1px solid #023f;
-            margin-bottom: 5px;
+            p {
+                margin-right: 20px;
+            }
         }
     }
 
+    // .category-popup {
+    //     width: 400px;
+    //     height: auto;
+    //     padding: 5px;
+    //     background-color: #fff;
+    //     border: 1px solid #333;
+    //     position: absolute;
+    //     top: 200px;
+    //     right: 320px;
+    //     display: flex;
+    //     justify-content: space-between;
+
+    //     .transaction {
+    //         padding: 7px;
+    //         border: 1px solid #023f;
+    //         margin-bottom: 5px;
+    //     }
+    // }
+
     .transaction {
         padding: 7px;
-        border: 1px solid #023f;
+        border-bottom: 1px solid #023f;
         margin-bottom: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
         &-delete button {
             color: #fff;
             border: none;

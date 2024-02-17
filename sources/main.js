@@ -103,7 +103,7 @@ const init = () => {
       });
     }
 
-    return finalArr;
+    return [finalArr, sum];
   }
 
   const categoriesList = document.querySelector('.budget-menu__list ul');
@@ -111,7 +111,7 @@ const init = () => {
   const categoriesListFill = (categoriesArrNew) => { // creates the list of categories to left of chart
     categoriesList.innerHTML = '';
     categoriesArrNew.forEach((category) => {
-      let arr = getPercentages(),
+      let arr = getPercentages()[0],
         percentage = 0;
       arr.forEach((item) => {
         if (item.category === category) percentage = item.percentage;
@@ -173,9 +173,10 @@ const init = () => {
 
   const budgetDate = document.querySelector('.budget-pie__date p'); // inserting current date into the circle
   budgetDate.innerHTML = nameOfMonthUS;
+  const budgetExpenses = budgetDate.nextSibling.nextSibling;
+  budgetExpenses.innerHTML = `Total expenses: ${getPercentages()[1]}`;
 
   const sortByAmount = (arr) => {
-    // console.log(arr);
     let lowestAmount,
       arrCopy = arr,
       arrSend = [];
@@ -210,15 +211,15 @@ const init = () => {
 
   const categoriesDOM = categoriesList.querySelectorAll('li'),
     categoryPopup = document.querySelector('.category-popup'),
-    categoryPopupList = categoryPopup.querySelector('.category-popup__list'),
+    // categoryPopupList = categoryPopup.querySelector('.category-popup__list'),
     budgetTransactions = document.querySelector('.budget-transactions'),
     budgetTransactionsList = budgetTransactions.querySelector('.budget-transactions__list'),
-    budgetTransactionsSum = budgetTransactions.querySelector('.budget-transaction__sum p');
+    budgetTransactionsSum = budgetTransactions.querySelector('.budget-transactions__sum p');
 
   const categoriesDOMBuild = () => {
     for (let i = 0; i < categoriesDOM.length; i++) { // tracks the click and sets the font-size and opacity of pie elements
       categoriesDOM[i].addEventListener('click', () => {
-        
+        budgetTransactions.className = 'budget-transactions closed';
         let categoriesSumList = JSON.parse(localStorage.getItem('sums'));
         
         
@@ -226,14 +227,17 @@ const init = () => {
         const categoriesPie = document.querySelectorAll('.category');
 
         const refresh = () => {
+          budgetTransactions.classList.add('closed');
           budgetTransactionsList.innerHTML = '';
           budgetTransactionsSum.innerHTML = '';
           categoriesPie.forEach((item) => item.style.opacity = '1');
-          categoryPopup.classList.add('closed');
+          // categoryPopup.classList.add('closed');
           // categoryPopupList.innerHTML = '';
           categoriesDOM.forEach((category) => {
             category.classList.remove('clicked');
-            category.style.fontSize = '18px';
+            // category.style.borderBottom = 'none';
+            // category.style.fontSize = '18px';
+            // category.style.fontWeight = '400';
           });
         }
 
@@ -242,7 +246,11 @@ const init = () => {
 
         if (!categoryIsClicked) {
           categoriesDOM[i].classList.add('clicked');
-          categoriesDOM[i].style.fontSize = '20px';
+          // categoriesDOM[i].style.borderBottom = '3px solid #3544CF';
+          // categoriesDOM[i].style.fontSize = '20px';
+          // categoriesDOM[i].style.fontWeight = 'Bold';
+
+          budgetTransactions.classList.remove('closed');
 
           categoriesPie.forEach((item) => {
             let itemThatIsNotClicked = !item.classList.contains(categoriesDOM[i].id);
@@ -252,7 +260,7 @@ const init = () => {
               categoriesSumList.forEach((sum) => {
 
                 if (item.classList.contains(sum.category)) {
-                  budgetTransactionsSum.innerHTML = `${sum.amount}`;
+                  budgetTransactionsSum.innerHTML = `${sum.category}: ${sum.amount}`;
                 }
               });
 
@@ -262,7 +270,6 @@ const init = () => {
                 let transaction = document.createElement('div');
                 transaction.className = `transaction`;
                 transaction.innerHTML = `
-                  <div class="transaction-category">Category: ${item.category}</div>
                   <div class="transaction-amount">Amount: ${item.amount}</div>
                   <div class="transaction-date">Date: ${item.date}</div>
                   <div class="transaction-comment">Comment: ${item.comment}</div>
@@ -272,25 +279,27 @@ const init = () => {
                 `;
                 budgetTransactionsList.appendChild(transaction);
               });
+              budgetTransactions.classList.remove('closed')
               // budgetTransactions.appendChild(budgetTransactionsList);
               // categoryPopup.classList.remove('closed');
             }
           });
 
-          const categoryPopupSort = categoryPopup.querySelector('.category-popup__sort'),
-            categoryPopupSortButton = categoryPopupSort.querySelector('button');
 
-          categoryPopupSortButton.addEventListener('click', () => {
-            const sortKind = categoryPopupSort.querySelector('select').value;
-            if (sortKind === 'amount') {
-              let bizdinItem = categoriesCategorize()[i];
-              console.log(bizdinItem);
-              let sendingItem = bizdinItem;
-              console.log(sendingItem);
-              let sortedArr = sortByAmount(sendingItem);
-              console.log(sortedArr);
-            }
-          });
+          // const categoryPopupSort = categoryPopup.querySelector('.category-popup__sort'),
+          //   categoryPopupSortButton = categoryPopupSort.querySelector('button');
+
+          // categoryPopupSortButton.addEventListener('click', () => {
+          //   const sortKind = categoryPopupSort.querySelector('select').value;
+          //   if (sortKind === 'amount') {
+          //     let bizdinItem = categoriesCategorize()[i];
+          //     console.log(bizdinItem);
+          //     let sendingItem = bizdinItem;
+          //     console.log(sendingItem);
+          //     let sortedArr = sortByAmount(sendingItem);
+          //     console.log(sortedArr);
+          //   }
+          // });
 
           const transactionsPopup = document.querySelectorAll('.transaction');
           for (let j = 0; j < transactionsPopup.length; j++) {
@@ -299,12 +308,13 @@ const init = () => {
             deleteButton.addEventListener('click', () => {
               let transactionsArrDel = categoriesCategorize();
               transactionsArrDel[i].splice(j, 1);
+              budgetTransactions.classList.add('closed');
 
               console.log(transactionsArrDel.flat());
 
               localStorage.removeItem('transactions');
               localStorage.setItem('transactions', JSON.stringify(transactionsArrDel.flat()));
-              categoryPopup.classList.add('closed');
+              // categoryPopup.classList.add('closed');
               alert('Transaction has been deleted');
               init();
             });
@@ -316,7 +326,7 @@ const init = () => {
 
   categoriesDOMBuild();
 
-  let categoriesWithPercentages = getPercentages();
+  let categoriesWithPercentages = getPercentages()[0];
 
   const getRotationData = () => { // gathers information about rotating the segments as categories
     let sum = [];
@@ -381,6 +391,7 @@ const init = () => {
   addDataButton.onclick = () => {
     if (categoriesArr[1]) {
       addTransactionPopup.classList.toggle('closed');
+      budgetTransactions.className = 'budget-transactions closed';
     } else {
       alert('Choose your categories first!');
     }

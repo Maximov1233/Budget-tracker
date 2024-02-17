@@ -55,40 +55,45 @@
                     </div>
                     <div class="budget-pie__date">
                         <p></p>
+                        <p></p>
                     </div>
                 </div>
                 <div class="budget-add">
                     <button type="submit">Add value</button>
                 </div>
             </div>
-            <div class="budget-transactions">
-                <div class="budget-transaction__sum">
+            <div class="budget-transactions closed">
+                <div class="budget-transactions__sum">
                     <p></p>
                 </div>
                 <div class="budget-transactions__list">
-                    
+                
                 </div>
             </div>
             </div>
         </div>
         <div class="add-transaction-popup closed">
             <div class="category-selection">
+                <label for="categorySelect">Choose the category:</label>
                 <select id="categorySelect"></select>
             </div>
             <div class="category-value">
-                <input type="number" min="0" placeholder="Write the amount" required>
+                <p>Write the amount:</p>
+                <input type="number" min="0" required>
             </div>
             <div class="category-info">
-                <input type="text" placeholder="Add comment (optionally)">
+                <p>Add comment (optionally):</p>
+                <input type="text">
             </div>
             <div class="category-date">
+                <p>Choose the date of transaction:</p>
                 <input type="date" lang="en-UK">
             </div>
             <div class="category-submit">
                 <button>Submit</button>
             </div>
         </div>
-        <div class="category-popup closed">
+        <!-- <div class="category-popup closed">
             <div class="category-popup__list">
 
             </div>
@@ -100,7 +105,7 @@
                 </select>
                 <button type="submit">Sort</button>
             </div>
-        </div>
+        </div> -->
         <div class="categories-selection-popup closed">
             <p>Choose your preferred categories:</p>
             <div class="categories-selection__list"></div>
