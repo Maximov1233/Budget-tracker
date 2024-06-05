@@ -1,10 +1,26 @@
-import { transactionsArr as dataArr, categoriesData, getCategoryColor, checkAvailability } from "./data.js";
+import { ExpensesCategoriesData, IncomesCategoriesData, getCategoryColor, checkAvailability } from "./data.js";
 
 // if (!localStorage.transactions) localStorage.setItem('transactions', JSON.stringify(dataArr));
 
 const init = () => {
 
-  let transactionsArr = JSON.parse(localStorage.getItem('transactions')) || [];
+
+  if (!JSON.parse(localStorage.getItem('budget-type'))) {
+    localStorage.setItem('budget-type', JSON.stringify('expenses'));
+  }
+
+  let budgetType = JSON.parse(localStorage.getItem('budget-type'));
+
+  // console.log(budgetType);
+
+  let transactionsType = budgetType === 'expenses' ? 'transactions' : 'incomings';
+
+  let transactionsArr = JSON.parse(localStorage.getItem(`${transactionsType}`)) || [];
+
+  let categoriesType = budgetType === 'expenses' ? 'categories' : 'sources';
+
+  // console.log(transactionsArr);  
+  // console.log(JSON.parse(localStorage.getItem('budget-type')));
 
   const addCategoryButton = document.querySelector('.budget-menu__add button');
 
@@ -12,7 +28,9 @@ const init = () => {
     categoriesSelectionList = categoriesSelectionPopup.querySelector('.categories-selection__list'),
     categoriesSelectionButton = categoriesSelectionPopup.querySelector('.categories-selection__button button');
 
-  let categoriesArr = JSON.parse(localStorage.getItem('categories')) || [];
+  let categoriesArr = JSON.parse(localStorage.getItem(`${categoriesType}`)) || [];
+
+  // console.log(categoriesArr);
 
   const categoriesSum = (arr) => { // new summarize of categories (dynamic)
     if (arr) { // in case there is some transactions
@@ -24,11 +42,9 @@ const init = () => {
           someObj.category = arr[i][j].category;
           someObj.amount += arr[i][j].amount;
         }
-        // console.log(someObj);
         outerArr.push(someObj);
       }
       localStorage.setItem('sums', JSON.stringify(outerArr.flat()));
-      console.log(outerArr.flat());
       return outerArr.flat();
     } else { // in case there is no transactions
       let outerArr = [];
@@ -64,16 +80,6 @@ const init = () => {
 
   let categorizedArr = categoriesCategorize();
 
-  const biggestAmount = (arr) => {
-    let amount = 0;
-
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].amount > amount) amount = arr[i].amount;
-    }
-
-    return amount;
-  }
-
   const getPercentages = () => { // calculating the categories' percentages
     let finalArr = categoriesSum(categorizedArr);
     let sum = 0;
@@ -95,12 +101,7 @@ const init = () => {
 
     if (checkPercentage !== 100 && checkPercentage > 0) {
       let remainingPercentage = 100 - checkPercentage;
-      finalArr.forEach((data) => {
-        let theBiggestAmountOfCategories = data.amount === biggestAmount(finalArr);
-        if (theBiggestAmountOfCategories) {
-          data.percentage += remainingPercentage;
-        }
-      });
+      finalArr[0].percentage += remainingPercentage;
     }
 
     return [finalArr, sum];
@@ -128,19 +129,34 @@ const init = () => {
   categoriesListFill(categoriesArr);
 
   addCategoryButton.onclick = () => {
-    if (categoriesSelectionPopup.classList.contains('closed')) {
-      categoriesSelectionPopup.classList.toggle('closed');
-      categoriesSelectionList.innerHTML = '';
-      categoriesList.innerHTML = '';
-      categoriesData.forEach((category) => {
+
+    const categorySelectionFill = (arr) => {
+      arr.forEach((category) => {
         let categoryDiv = document.createElement('div');
         categoryDiv.className = 'category';
         categoryDiv.innerHTML = `
-          <p>${category}</p>
-          <input type="checkbox" id="${category}">
-          `;
+              <p>${category}</p>
+              <input type="checkbox" id="${category}">
+              `;
         categoriesSelectionList.appendChild(categoryDiv);
       });
+    }
+
+    if (categoriesSelectionPopup.classList.contains('closed')) {
+      categoriesSelectionPopup.classList.toggle('closed');
+      categoriesSelectionList.innerHTML = '';
+      budgetTransactions.classList.add('closed');
+      budgetTransactionsList.innerHTML = '';
+      budgetTransactionsSum.innerHTML = '';
+      categoriesDOM.forEach((category) => {
+        category.classList.remove('clicked');
+      });
+
+      if (budgetType === 'expenses') {
+        categorySelectionFill(ExpensesCategoriesData);
+      } else {
+        categorySelectionFill(IncomesCategoriesData);
+      }
 
       let selections = categoriesSelectionList.querySelectorAll('.category');
 
@@ -148,9 +164,13 @@ const init = () => {
         if (checkAvailability(categoriesArr, selection.querySelector('p').innerHTML)) {
           selection.querySelector('input').setAttribute('checked', '');
         }
+
+        selection.addEventListener('click', () => {
+          selection.querySelector('input').toggleAttribute('checked');
+        });
       });
 
-      categoriesSelectionButton.addEventListener('click', () => {
+      categoriesSelectionButton.onclick = () => {
         const inputs = categoriesSelectionList.querySelectorAll('.category input');
 
         let categoriesArray = [];
@@ -158,12 +178,16 @@ const init = () => {
           if (input.checked) categoriesArray.push(input.id);
         });
 
-        localStorage.setItem('categories', JSON.stringify(categoriesArray));
+        localStorage.setItem(`${categoriesType}`, JSON.stringify(categoriesArray));
         categoriesListFill(categoriesArray);
         popupBuild(categoriesArray);
         categoriesSelectionPopup.classList.add('closed');
         init();
-      });
+      }
+
+      // categoriesSelectionButton.addEventListener('click', () => {
+
+      // });
     }
   }
 
@@ -171,47 +195,26 @@ const init = () => {
     dateStyle: 'medium'
   }).format(new Date());
 
-  const budgetDate = document.querySelector('.budget-pie__date p'); // inserting current date into the circle
-  budgetDate.innerHTML = nameOfMonthUS;
-  const budgetExpenses = budgetDate.nextSibling.nextSibling;
-  budgetExpenses.innerHTML = `Total expenses: ${getPercentages()[1]}`;
+  const budgetDate = document.querySelector('.budget-pie__date'),
+    budgetDateText = budgetDate.querySelector('p'); // inserting current date into the circle
+  budgetDateText.innerHTML = nameOfMonthUS;
+  const budgetExpenses = budgetDateText.nextSibling.nextSibling;
+  budgetExpenses.innerHTML = `Total ${budgetType === 'expenses' ? 'expenses' : 'incomes'}: ${getPercentages()[1]}`;
 
-  const sortByAmount = (arr) => {
-    let lowestAmount,
-      arrCopy = arr,
-      arrSend = [];
 
-    // console.log(arrCopy);
-
-    const sortingFunc = () => {
-      for (let i = 0; i < arrCopy.length; i++) {
-        if (arrCopy[i].amount < lowestAmount || lowestAmount === undefined) {
-          lowestAmount = arrCopy[i].amount;
-          break;
-        }
-      }
-
-      for (let j = 0; j < arrCopy.length; j++) {
-        if (arrCopy[j].amount === lowestAmount) {
-          arrSend.push(arrCopy[j]);
-          arrCopy.splice(j, 1);
-          break;
-        }
-      }
+  budgetDate.onclick = () => {
+    budgetTransactionsList.innerHTML = '';
+    budgetTransactionsSum.innerHTML = '';
+    if (JSON.parse(localStorage.getItem('budget-type')) === 'expenses') {
+      localStorage.setItem('budget-type', JSON.stringify('incomes'));
+    } else {
+      localStorage.setItem('budget-type', JSON.stringify('expenses'));
     }
 
-    for (let z = 0; z < arr.length; z++) {
-      console.log(arrCopy.length);
-      if (arrCopy.length > 0) sortingFunc();
-    }
-    // console.log(arrCopy);
-    console.log(arrSend);
-    return arrSend;
+    init();
   }
 
   const categoriesDOM = categoriesList.querySelectorAll('li'),
-    categoryPopup = document.querySelector('.category-popup'),
-    // categoryPopupList = categoryPopup.querySelector('.category-popup__list'),
     budgetTransactions = document.querySelector('.budget-transactions'),
     budgetTransactionsList = budgetTransactions.querySelector('.budget-transactions__list'),
     budgetTransactionsSum = budgetTransactions.querySelector('.budget-transactions__sum p');
@@ -220,9 +223,8 @@ const init = () => {
     for (let i = 0; i < categoriesDOM.length; i++) { // tracks the click and sets the font-size and opacity of pie elements
       categoriesDOM[i].addEventListener('click', () => {
         budgetTransactions.className = 'budget-transactions closed';
+
         let categoriesSumList = JSON.parse(localStorage.getItem('sums'));
-        
-        
 
         const categoriesPie = document.querySelectorAll('.category');
 
@@ -231,13 +233,8 @@ const init = () => {
           budgetTransactionsList.innerHTML = '';
           budgetTransactionsSum.innerHTML = '';
           categoriesPie.forEach((item) => item.style.opacity = '1');
-          // categoryPopup.classList.add('closed');
-          // categoryPopupList.innerHTML = '';
           categoriesDOM.forEach((category) => {
             category.classList.remove('clicked');
-            // category.style.borderBottom = 'none';
-            // category.style.fontSize = '18px';
-            // category.style.fontWeight = '400';
           });
         }
 
@@ -246,10 +243,6 @@ const init = () => {
 
         if (!categoryIsClicked) {
           categoriesDOM[i].classList.add('clicked');
-          // categoriesDOM[i].style.borderBottom = '3px solid #3544CF';
-          // categoriesDOM[i].style.fontSize = '20px';
-          // categoriesDOM[i].style.fontWeight = 'Bold';
-
           budgetTransactions.classList.remove('closed');
 
           categoriesPie.forEach((item) => {
@@ -265,7 +258,7 @@ const init = () => {
               });
 
               let ourItem = categoriesCategorize()[i];
-              
+
               ourItem.forEach((item) => {
                 let transaction = document.createElement('div');
                 transaction.className = `transaction`;
@@ -279,27 +272,13 @@ const init = () => {
                 `;
                 budgetTransactionsList.appendChild(transaction);
               });
-              budgetTransactions.classList.remove('closed')
-              // budgetTransactions.appendChild(budgetTransactionsList);
-              // categoryPopup.classList.remove('closed');
+              budgetTransactions.classList.remove('closed');
             }
           });
 
-
-          // const categoryPopupSort = categoryPopup.querySelector('.category-popup__sort'),
-          //   categoryPopupSortButton = categoryPopupSort.querySelector('button');
-
-          // categoryPopupSortButton.addEventListener('click', () => {
-          //   const sortKind = categoryPopupSort.querySelector('select').value;
-          //   if (sortKind === 'amount') {
-          //     let bizdinItem = categoriesCategorize()[i];
-          //     console.log(bizdinItem);
-          //     let sendingItem = bizdinItem;
-          //     console.log(sendingItem);
-          //     let sortedArr = sortByAmount(sendingItem);
-          //     console.log(sortedArr);
-          //   }
-          // });
+          if (budgetTransactionsList.innerHTML === '') {
+            budgetTransactionsList.innerHTML = `<p class="budget-transactions__list-empty">No transactions!</p>`;
+          }
 
           const transactionsPopup = document.querySelectorAll('.transaction');
           for (let j = 0; j < transactionsPopup.length; j++) {
@@ -310,11 +289,10 @@ const init = () => {
               transactionsArrDel[i].splice(j, 1);
               budgetTransactions.classList.add('closed');
 
-              console.log(transactionsArrDel.flat());
+              // console.log(transactionsArrDel.flat());
 
-              localStorage.removeItem('transactions');
-              localStorage.setItem('transactions', JSON.stringify(transactionsArrDel.flat()));
-              // categoryPopup.classList.add('closed');
+              localStorage.removeItem(`${transactionsType}`);
+              localStorage.setItem(`${transactionsType}`, JSON.stringify(transactionsArrDel.flat()));
               alert('Transaction has been deleted');
               init();
             });
@@ -338,6 +316,7 @@ const init = () => {
     sum.reverse();
     sum.shift();
     sum.reverse();
+
     let obj = 0,
       newArr = [];
     for (let i = 0; i < sum.length; i++) {
@@ -390,16 +369,25 @@ const init = () => {
 
   addDataButton.onclick = () => {
     if (categoriesArr[1]) {
+      addTransactionPopup.querySelectorAll('input').forEach((item) => item.value = '');
       addTransactionPopup.classList.toggle('closed');
       budgetTransactions.className = 'budget-transactions closed';
+      budgetPieCategories.querySelectorAll('.category').forEach((category) => category.style.opacity = '');
+      const cancelButton = document.querySelector('.category-cancel');
+      cancelButton.addEventListener('click', () => {
+        addTransactionPopup.classList.add('closed');
+      });
     } else {
       alert('Choose your categories first!');
     }
   }
 
+  const budgetSuccess = document.querySelector('.budget-success');
+
   const dataSubmitButton = document.querySelector('.category-submit button');
 
   dataSubmitButton.onclick = () => {
+    console.log(budgetSuccess.style.animationName);
     let categoryInput = addTransactionCategorySelect.value,
       amountInput = parseInt(addTransactionPopup.querySelector('.category-value input').value),
       commentInput = addTransactionPopup.querySelector('.category-info input').value,
@@ -412,16 +400,20 @@ const init = () => {
         date: dateInput,
         comment: commentInput ? commentInput : 'No comment'
       };
+
       transactionsArr.push(newData);
       console.log(newData);
-      localStorage.removeItem('transactions');
-      localStorage.setItem('transactions', JSON.stringify(transactionsArr));
+      localStorage.removeItem(`${transactionsType}`);
+      localStorage.setItem(`${transactionsType}`, JSON.stringify(transactionsArr));
       categoriesList.innerHTML = '';
       addTransactionPopup.classList.toggle('closed');
-      alert('Transaction has been added');
+      budgetSuccess.style.animationName = 'slideDown';
+      setTimeout(() => {
+        budgetSuccess.style.animationName = '';
+      }, 3000);
       init();
     } else {
-      alert('Fill the amount and date');
+      alert('Fill the value and date');
     }
   }
 }

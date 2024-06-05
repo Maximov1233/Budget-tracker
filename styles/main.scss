@@ -8,9 +8,21 @@ html {
     font-size: 16px;
 }
 
-button, select, input {
+button,
+select,
+input {
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
+}
+
+.button {
+    border: none;
+    outline: none;
+    padding: 5px 14px;
+    border-radius: 7px;
+    background-color: #023f;
+    color: #fff;
+    border: 1px solid #023f;
 }
 
 ul {
@@ -31,8 +43,28 @@ ul {
     position: relative;
 }
 
+.clicked {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+@keyframes slideDown {
+    0% {
+        margin-top: -40px;
+        ;
+    }
+
+    50% {
+        margin-top: 0;
+        ;
+    }
+
+    100% {
+        margin-top: -40px;
+    }
+}
+
 .budget-menu__list ul li {
-    
 
     &::before {
         content: '';
@@ -52,7 +84,7 @@ body {
 
     .header {
         background-color: #E6E9F2;
-        padding-top: 50px;
+        padding-top: 30px;
 
         .container {
             display: block;
@@ -119,23 +151,26 @@ body {
 
     .budget {
         padding-top: 20px;
-        // min-height: 1000px;
-        // display: flex;
-        // justify-content: space-between;
-        // margin-top: 50px;
-        // text-align: center;
         background-color: #fff;
-        // display: flex;
-        // flex-direction: column;
+        position: relative;
+        overflow: hidden;
 
         &-menu {
             display: flex;
             justify-content: center;
-            margin-right: 100px;
+            margin-right: 150px;
             text-align: left;
 
             &__list {
-                margin-right: 5px;
+                min-width: 100px;
+
+                &-text {
+                    display: flex;
+
+                    p {
+                        margin-right: 20px;
+                    }
+                }
 
                 ul {
                     li {
@@ -221,10 +256,20 @@ body {
                 transform: translate(-50%, -50%);
                 font-size: 20px;
                 box-shadow: 0px 1px 20px 0px #584e4e;
+                // z-index: 99;
+                cursor: pointer;
             }
         }
 
         &-transactions {
+
+            &__list {
+                &-empty {
+                    font-size: 20px;
+                    font-weight: bold;
+                }
+            }
+
             &__sum {
                 font-size: 20px;
                 font-weight: bold;
@@ -254,30 +299,73 @@ body {
                 cursor: pointer;
             }
         }
+
+        &-success {
+            position: absolute;
+            top: 0;
+            right: 70px;
+            padding: 5px 20px;
+            overflow: hidden;
+            animation-duration: 3s;
+            border-radius: 4px;
+            background-color: #3544CF;
+            color: #fff;
+            margin-top: -40px;
+            font-weight: bold;
+        }
     }
 
     .add-transaction-popup {
-        // width: 300px;
-        // height: 500px;
+        padding: 15px;
+        border-radius: 6px;
         background-color: #fff;
-        // border: 1px solid grey;
         position: absolute;
-        // margin-left: auto;
-        // margin-right: -50%;
-        // left: 0;
-        // right: 0;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        z-index: 100;
+        display: flex;
+        flex-wrap: wrap;
+        box-shadow: 0px 0px 20px 0px #d0d0d0;
 
         div {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            // justify-content: center;
+            // align-items: center;
+            flex: 50%;
+            padding: 5px;
+            // margin-right: 10px;
+            // margin-right: 5px;
 
             p {
-                margin-right: 20px;
+                text-align: left;
             }
+        }
+
+        select,
+        input {
+            min-width: 75%;
+        }
+
+        span {
+            color: #c30010;
+        }
+
+        button {
+            border: none;
+            outline: none;
+            padding: 5px 14px;
+            border-radius: 7px;
+            background-color: #023f;
+            color: #fff;
+            border: 1px solid #023f;
+        }
+
+        .category-cancel button {
+            background-color: #fff;
+            color: #023f;
+
         }
     }
 
@@ -308,6 +396,10 @@ body {
         justify-content: center;
         align-items: center;
 
+        div {
+            flex: 25%;
+        }
+
         &-delete button {
             color: #fff;
             border: none;
@@ -322,25 +414,34 @@ body {
     .categories-selection-popup {
         width: 300px;
         height: auto;
-        padding: 5px;
+        padding: 10px;
         background: #fff;
-        border: 1px solid #023f;
+        // border: 1px solid #023f;
         position: absolute;
         top: 100px;
         left: 50px;
+        box-shadow: 0px 0px 20px 0px #d0d0d0;
 
-        .categories-selection__list {
-            .category {
-                display: flex;
-
-                p {
-                    margin-right: 5px;
+        .categories-selection {
+            &__list {
+                .category {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 5px;
+                    cursor: pointer;
+    
+                    p {
+                        min-width: 110px;
+                    }
                 }
+            }
+            &__button {
+                text-align: center;
             }
         }
     }
 
     .closed {
-        display: none;
+        display: none !important;
     }
 }

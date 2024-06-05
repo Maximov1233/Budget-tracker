@@ -1,49 +1,19 @@
-// data of transactions
-
-export let transactionsArr = [
-    // {
-    //     category: 'Shopping',
-    //     amount: 5000,
-    //     date: '10/08/2023',
-    //     comment: ''
-    // },
-    // {
-    //     category: 'Maintenance',
-    //     amount: 1000,
-    //     date: '11/08/2023',
-    //     comment: ''
-    // },
-    // {
-    //     category: 'Groceries',
-    //     amount: 4000,
-    //     date: '12/08/2023',
-    //     comment: ''
-    // },
-    // {
-    //     category: 'Maintenance',
-    //     amount: 2000,
-    //     date: '13/08/2023',
-    //     comment: ''
-    // },
-    // {
-    //     category: 'Mortgage',
-    //     amount: 10000,
-    //     date: '13/08/2023',
-    //     comment: ''
-    // },
-]
-
-export const categoriesData = ['Shopping', 'Maintenance', 'Groceries', 'Leisure', 'Mortgage', 'Rent'];
+export const ExpensesCategoriesData = ['Shopping', 'Maintenance', 'Groceries', 'Leisure', 'Mortgage', 'Rent'];
+export const IncomesCategoriesData = ['Salary', 'Transfers', 'ROI', 'Other'];
 
 export const getCategoryColor = (category) => {
       switch (category) {
         case 'Shopping':
+        case 'Salary':
           return 'green';
         case 'Maintenance':
+        case 'Transfers':
           return 'red';
         case 'Groceries':
+        case 'ROI':
           return 'blue';
         case 'Leisure':
+        case 'Other':
           return 'yellow';  
         case 'Mortgage':
           return 'violet';

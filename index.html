@@ -36,17 +36,19 @@
             </div>
         </div>
     </header>
-        <div class="budget">
-            <div class="container">
+    <div class="budget">
+        <div class="container">
             <div class="budget-menu">
                 <div class="budget-menu__list">
-                    <p>Categories</p>
+                    <div class="budget-menu__list-text">
+                        <p>Categories</p>
+                        <div class="budget-menu__add">
+                            <button>Add category</button>
+                        </div>
+                    </div>
                     <ul>
 
                     </ul>
-                </div>
-                <div class="budget-menu__add">
-                    <button>Add category</button>
                 </div>
             </div>
             <div class="budget-window">
@@ -67,54 +69,49 @@
                     <p></p>
                 </div>
                 <div class="budget-transactions__list">
-                
+
                 </div>
             </div>
-            </div>
         </div>
-        <div class="add-transaction-popup closed">
-            <div class="category-selection">
-                <label for="categorySelect">Choose the category:</label>
-                <select id="categorySelect"></select>
-            </div>
-            <div class="category-value">
-                <p>Write the amount:</p>
-                <input type="number" min="0" required>
-            </div>
-            <div class="category-info">
-                <p>Add comment (optionally):</p>
-                <input type="text">
-            </div>
-            <div class="category-date">
-                <p>Choose the date of transaction:</p>
-                <input type="date" lang="en-UK">
-            </div>
-            <div class="category-submit">
-                <button>Submit</button>
-            </div>
+        <div class="budget-success">
+            <p>Transaction has been added!</p>
         </div>
-        <!-- <div class="category-popup closed">
-            <div class="category-popup__list">
+    </div>
+    <div class="add-transaction-popup closed">
+        <div class="category-selection">
+            <label for="categorySelect">Category</label>
+            <select id="categorySelect"></select>
+        </div>
+        <div class="category-value">
+            <p>Value <span class="star">*</span></p>
+            <input type="number" min="0" required>
+        </div>
+        <div class="category-info">
+            <p>Description</p>
+            <input type="text">
+        </div>
+        <div class="category-date">
+            <p>Date of transaction <span class="star">*</span></p>
+            <input type="date" lang="en-UK">
+        </div>
+        <div class="category-cancel">
+            <button>Cancel</button>
+        </div>
+        <div class="category-submit">
+            <button>Submit</button>
+        </div>
+    </div>
+    <div class="categories-selection-popup closed">
+        <p>Choose your preferred categories:</p>
+        <div class="categories-selection__list"></div>
+        <div class="categories-selection__button">
+            <button class="button">Add categories</button>
+        </div>
 
-            </div>
-            <div class="category-popup__sort">
-                <p>Sort by:</p>
-                <select id="categoryPopupSort">
-                    <option value="amount">Amount (from lowest to highest)</option>
-                    <option value="amount">Date (from oldest to newest)</option>
-                </select>
-                <button type="submit">Sort</button>
-            </div>
-        </div> -->
-        <div class="categories-selection-popup closed">
-            <p>Choose your preferred categories:</p>
-            <div class="categories-selection__list"></div>
-            <div class="categories-selection__button">
-                <button>Add categories</button>
-            </div>
-
-        </div>
+    </div>
     <script src="./sources/main.js" type="module"></script>
+    <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+    <div id="chartContainer"></div>
     <!-- <script src="./sources/data.js"></script> -->
 </body>
 
