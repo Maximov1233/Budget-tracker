@@ -132,7 +132,7 @@ body .budget {
 body .budget-menu {
   display: flex;
   justify-content: center;
-  margin-right: 150px;
+  margin-right: 100px;
   text-align: left;
 }
 body .budget-menu__list {
@@ -214,11 +214,37 @@ body .budget-pie__date {
   box-shadow: 0px 1px 20px 0px #584e4e;
   cursor: pointer;
 }
-body .budget-transactions__list-empty {
-  font-size: 20px;
-  font-weight: bold;
+body .budget-transactions__header {
+  margin-bottom: 5px;
+  position: relative;
 }
-body .budget-transactions__sum {
+body .budget-transactions__header .row-1 {
+  display: flex;
+  justify-content: space-between;
+}
+body .budget-transactions__header .row-2 {
+  display: flex;
+  text-align: left;
+}
+body .budget-transactions__header .row-2 div {
+  flex: 25%;
+}
+body .budget-transactions__header .form-sort {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background: #fff;
+  box-shadow: 0px 0px 20px 0px #d0d0d0;
+  padding: 5px;
+}
+body .budget-transactions__header .form-sort fieldset {
+  border: none;
+}
+body .budget-transactions__list {
+  max-height: 460px;
+  overflow-y: scroll;
+}
+body .budget-transactions__list-empty {
   font-size: 20px;
   font-weight: bold;
 }
@@ -240,7 +266,7 @@ body .budget-add button {
   color: white;
   cursor: pointer;
 }
-body .budget-success {
+body .budget-notification {
   position: absolute;
   top: 0;
   right: 70px;
@@ -300,7 +326,6 @@ body .transaction {
   border-bottom: 1px solid #002233;
   margin-bottom: 5px;
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 body .transaction div {
@@ -311,7 +336,7 @@ body .transaction-delete button {
   border: none;
   outline: none;
   min-width: 100%;
-  padding: 5px 10px;
+  padding: 7px 8px;
   border-radius: 6px;
   background-color: #3544CF;
 }

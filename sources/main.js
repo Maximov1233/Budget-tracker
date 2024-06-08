@@ -4,14 +4,11 @@ import { ExpensesCategoriesData, IncomesCategoriesData, getCategoryColor, checkA
 
 const init = () => {
 
-
   if (!JSON.parse(localStorage.getItem('budget-type'))) {
     localStorage.setItem('budget-type', JSON.stringify('expenses'));
   }
 
   let budgetType = JSON.parse(localStorage.getItem('budget-type'));
-
-  // console.log(budgetType);
 
   let transactionsType = budgetType === 'expenses' ? 'transactions' : 'incomings';
 
@@ -19,18 +16,11 @@ const init = () => {
 
   let categoriesType = budgetType === 'expenses' ? 'categories' : 'sources';
 
-  // console.log(transactionsArr);  
-  // console.log(JSON.parse(localStorage.getItem('budget-type')));
-
-  const addCategoryButton = document.querySelector('.budget-menu__add button');
-
   const categoriesSelectionPopup = document.querySelector('.categories-selection-popup'),
     categoriesSelectionList = categoriesSelectionPopup.querySelector('.categories-selection__list'),
     categoriesSelectionButton = categoriesSelectionPopup.querySelector('.categories-selection__button button');
 
   let categoriesArr = JSON.parse(localStorage.getItem(`${categoriesType}`)) || [];
-
-  // console.log(categoriesArr);
 
   const categoriesSum = (arr) => { // new summarize of categories (dynamic)
     if (arr) { // in case there is some transactions
@@ -128,6 +118,8 @@ const init = () => {
 
   categoriesListFill(categoriesArr);
 
+  const addCategoryButton = document.querySelector('.budget-menu__add button'); // add category window
+
   addCategoryButton.onclick = () => {
 
     const categorySelectionFill = (arr) => {
@@ -142,52 +134,41 @@ const init = () => {
       });
     }
 
-    if (categoriesSelectionPopup.classList.contains('closed')) {
-      categoriesSelectionPopup.classList.toggle('closed');
-      categoriesSelectionList.innerHTML = '';
-      budgetTransactions.classList.add('closed');
-      budgetTransactionsList.innerHTML = '';
-      budgetTransactionsSum.innerHTML = '';
-      categoriesDOM.forEach((category) => {
-        category.classList.remove('clicked');
-      });
+    closeAllWindows();
+    categoriesSelectionPopup.classList.toggle('closed');
+    categoriesSelectionList.innerHTML = '';
 
-      if (budgetType === 'expenses') {
-        categorySelectionFill(ExpensesCategoriesData);
-      } else {
-        categorySelectionFill(IncomesCategoriesData);
+    if (budgetType === 'expenses') {
+      categorySelectionFill(ExpensesCategoriesData);
+    } else {
+      categorySelectionFill(IncomesCategoriesData);
+    }
+
+    let selections = categoriesSelectionList.querySelectorAll('.category');
+
+    selections.forEach((selection) => {
+      if (checkAvailability(categoriesArr, selection.querySelector('p').innerHTML)) {
+        selection.querySelector('input').setAttribute('checked', '');
       }
 
-      let selections = categoriesSelectionList.querySelectorAll('.category');
+      selection.addEventListener('click', () => {
+        selection.querySelector('input').toggleAttribute('checked');
+      });
+    });
 
-      selections.forEach((selection) => {
-        if (checkAvailability(categoriesArr, selection.querySelector('p').innerHTML)) {
-          selection.querySelector('input').setAttribute('checked', '');
-        }
+    categoriesSelectionButton.onclick = () => {
+      const inputs = categoriesSelectionList.querySelectorAll('.category input');
 
-        selection.addEventListener('click', () => {
-          selection.querySelector('input').toggleAttribute('checked');
-        });
+      let categoriesArray = [];
+      inputs.forEach((input) => {
+        if (input.checked) categoriesArray.push(input.id);
       });
 
-      categoriesSelectionButton.onclick = () => {
-        const inputs = categoriesSelectionList.querySelectorAll('.category input');
-
-        let categoriesArray = [];
-        inputs.forEach((input) => {
-          if (input.checked) categoriesArray.push(input.id);
-        });
-
-        localStorage.setItem(`${categoriesType}`, JSON.stringify(categoriesArray));
-        categoriesListFill(categoriesArray);
-        popupBuild(categoriesArray);
-        categoriesSelectionPopup.classList.add('closed');
-        init();
-      }
-
-      // categoriesSelectionButton.addEventListener('click', () => {
-
-      // });
+      localStorage.setItem(`${categoriesType}`, JSON.stringify(categoriesArray));
+      categoriesListFill(categoriesArray);
+      popupBuild(categoriesArray);
+      categoriesSelectionPopup.classList.add('closed');
+      init();
     }
   }
 
@@ -203,8 +184,8 @@ const init = () => {
 
 
   budgetDate.onclick = () => {
-    budgetTransactionsList.innerHTML = '';
-    budgetTransactionsSum.innerHTML = '';
+    closeAllWindows();
+
     if (JSON.parse(localStorage.getItem('budget-type')) === 'expenses') {
       localStorage.setItem('budget-type', JSON.stringify('incomes'));
     } else {
@@ -217,7 +198,18 @@ const init = () => {
   const categoriesDOM = categoriesList.querySelectorAll('li'),
     budgetTransactions = document.querySelector('.budget-transactions'),
     budgetTransactionsList = budgetTransactions.querySelector('.budget-transactions__list'),
-    budgetTransactionsSum = budgetTransactions.querySelector('.budget-transactions__sum p');
+    budgetTransactionsHeader = budgetTransactions.querySelector('.budget-transactions__header');
+
+  const budgetNotification = document.querySelector('.budget-notification'),
+    budgetNotificationText = budgetNotification.querySelector('p');
+
+  const notificationAlert = (add) => {
+    budgetNotification.style.animationName = 'slideDown';
+    budgetNotificationText.innerHTML = `Transaction has been ${add ? 'added' : 'deleted'}!`;
+    setTimeout(() => {
+      budgetNotification.style.animationName = '';
+    }, 3000);
+  }
 
   const categoriesDOMBuild = () => {
     for (let i = 0; i < categoriesDOM.length; i++) { // tracks the click and sets the font-size and opacity of pie elements
@@ -231,7 +223,7 @@ const init = () => {
         const refresh = () => {
           budgetTransactions.classList.add('closed');
           budgetTransactionsList.innerHTML = '';
-          budgetTransactionsSum.innerHTML = '';
+          budgetTransactionsHeader.innerHTML = '';
           categoriesPie.forEach((item) => item.style.opacity = '1');
           categoriesDOM.forEach((category) => {
             category.classList.remove('clicked');
@@ -250,28 +242,78 @@ const init = () => {
             if (itemThatIsNotClicked) {
               item.style.opacity = '0.3';
             } else {
+              let ourItem = categoriesCategorize()[i];
+
               categoriesSumList.forEach((sum) => {
 
                 if (item.classList.contains(sum.category)) {
-                  budgetTransactionsSum.innerHTML = `${sum.category}: ${sum.amount}`;
+                  budgetTransactionsHeader.innerHTML = `
+                  <div class="budget-transactions__header row-1">
+                    <div class="budget-transactions__header-left">
+                      <div class="transactions-sum">
+                        <p>${sum.category}: ${sum.amount}</p>
+                      </div>
+                      <div class="transactions-number">
+                        <p>Transactions: ${ourItem.length}</p>
+                      </div>
+                    </div>
+                    <div class="budget-transactions__header-right">
+                      <div class="transactions-sort">
+                        <button class="button sort-button">Sort</button>
+                        <form class="form-sort closed">
+                          <fieldset>
+                            <div>
+                              <input type="radio" id="chronology" name="sortMethod" value="chronology" checked/>
+                              <label for="chronology">In chronological order</label>
+                            </div>
+                            <div>
+                              <input type="radio" id="amountUp" name="sortMethod" value="amountUp"/>
+                              <label for="amountUp">Amount (Ascending)</label>
+                            </div>
+                            <div>
+                              <input type="radio" id="amountDown" name="sortMethod" value="amountDown"/>
+                              <label for="amountDown">Amount (Descending)</label>
+                            </div>
+                            <div>
+                              <input type="radio" id="dateUp" name="sortMethod" value="dateUp"/>
+                              <label for="dateUp">Date (Ascending)</label>
+                            </div>
+                            <div>
+                              <input type="radio" id="dateDown" name="sortMethod" value="dateDown"/>
+                              <label for="dateDown">Date (Descending)</label>
+                            </div>
+                          </fieldset>
+                          <button type="button" class="button apply-button">Apply</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="budget-transactions__header row-2">
+                    <div>Number</div>
+                    <div>Amount</div>
+                    <div>Date</div>
+                    <div>Comment</div>
+                    <div>Edit</div>
+                  </div>
+                  `;
                 }
               });
 
-              let ourItem = categoriesCategorize()[i];
-
-              ourItem.forEach((item) => {
+              for (let i = 0; i < ourItem.length; i++) {
                 let transaction = document.createElement('div');
-                transaction.className = `transaction`;
+                transaction.className = 'transaction';
                 transaction.innerHTML = `
-                  <div class="transaction-amount">Amount: ${item.amount}</div>
-                  <div class="transaction-date">Date: ${item.date}</div>
-                  <div class="transaction-comment">Comment: ${item.comment}</div>
+                  <div class="transaction-number">${i + 1}</div>
+                  <div class="transaction-amount">Amount: ${ourItem[i].amount}</div>
+                  <div class="transaction-date">Date: ${ourItem[i].date}</div>
+                  <div class="transaction-comment">Comment: ${ourItem[i].comment}</div>
                   <div class="transaction-delete">
-                    <button type="submit">Delete</button>
+                    <button class="delete-button">Delete</button>
                   </div>
                 `;
                 budgetTransactionsList.appendChild(transaction);
-              });
+              }
+
               budgetTransactions.classList.remove('closed');
             }
           });
@@ -280,20 +322,79 @@ const init = () => {
             budgetTransactionsList.innerHTML = `<p class="budget-transactions__list-empty">No transactions!</p>`;
           }
 
+          // sort
+          const sortButton = document.querySelector('.sort-button');
+
+          sortButton.addEventListener('click', () => {
+            const sortWindow = document.querySelector('.form-sort'),
+            sortMethodList = sortWindow.querySelectorAll('input'),
+            applyButton = sortWindow.querySelector('.apply-button');
+            
+            sortWindow.classList.remove('closed');
+
+            let sortMethod = '';
+
+            applyButton.addEventListener('click', () => {
+              sortMethodList.forEach((method) => {
+                if (method.checked) {
+                  sortMethod = method.value;
+                }
+              });
+
+              let sortArr = categoriesCategorize()[i];
+
+              switch (sortMethod) {
+                case 'chronology':
+                  sortArr = categoriesCategorize()[i];
+                  break;
+                case 'amountUp':
+                  sortArr.sort((a, b) => a.amount - b.amount);
+                  break;
+                case 'amountDown':
+                  sortArr.sort((a, b) => a.amount - b.amount);
+                  sortArr.reverse();
+                  break;
+                case 'dateUp':
+                  sortArr.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+                  break;
+                case 'dateDown':
+                  sortArr.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+                  sortArr.reverse();
+                  break;
+              }
+
+              budgetTransactionsList.innerHTML = '';
+
+              for (let i = 0; i < sortArr.length; i++) {
+                let transaction = document.createElement('div');
+                transaction.className = 'transaction';
+                transaction.innerHTML = `
+                  <div class="transaction-number">${i + 1}</div>
+                  <div class="transaction-amount">Amount: ${sortArr[i].amount}</div>
+                  <div class="transaction-date">Date: ${sortArr[i].date}</div>
+                  <div class="transaction-comment">Comment: ${sortArr[i].comment}</div>
+                  <div class="transaction-delete">
+                    <button class="delete-button">Delete</button>
+                  </div>
+                `;
+                budgetTransactionsList.appendChild(transaction);
+              }
+
+              sortWindow.classList.add('closed');
+            });
+          });
+
           const transactionsPopup = document.querySelectorAll('.transaction');
           for (let j = 0; j < transactionsPopup.length; j++) {
-            let deleteButton = transactionsPopup[j].querySelector('button');
+            let deleteButton = transactionsPopup[j].querySelector('.delete-button');
 
             deleteButton.addEventListener('click', () => {
               let transactionsArrDel = categoriesCategorize();
               transactionsArrDel[i].splice(j, 1);
               budgetTransactions.classList.add('closed');
-
-              // console.log(transactionsArrDel.flat());
-
               localStorage.removeItem(`${transactionsType}`);
               localStorage.setItem(`${transactionsType}`, JSON.stringify(transactionsArrDel.flat()));
-              alert('Transaction has been deleted');
+              notificationAlert();
               init();
             });
           }
@@ -365,14 +466,22 @@ const init = () => {
   popupBuild(categoriesArr);
   categoryFill(categoriesWithPercentages);
 
+  const closeAllWindows = (addData) => {
+    categoriesSelectionPopup.classList.add('closed');
+    addTransactionPopup.classList.add('closed');
+    if (addData) addTransactionPopup.classList.remove('closed');
+    budgetTransactionsList.innerHTML = '';
+    budgetTransactionsHeader.innerHTML = '';
+    budgetPieCategories.querySelectorAll('.category').forEach((category) => category.style.opacity = '');
+    categoriesDOM.forEach((category) => category.classList.remove('clicked'));
+  }
+
   const addDataButton = document.querySelector('.budget-add button');
 
   addDataButton.onclick = () => {
     if (categoriesArr[1]) {
+      closeAllWindows(true);
       addTransactionPopup.querySelectorAll('input').forEach((item) => item.value = '');
-      addTransactionPopup.classList.toggle('closed');
-      budgetTransactions.className = 'budget-transactions closed';
-      budgetPieCategories.querySelectorAll('.category').forEach((category) => category.style.opacity = '');
       const cancelButton = document.querySelector('.category-cancel');
       cancelButton.addEventListener('click', () => {
         addTransactionPopup.classList.add('closed');
@@ -382,12 +491,9 @@ const init = () => {
     }
   }
 
-  const budgetSuccess = document.querySelector('.budget-success');
-
   const dataSubmitButton = document.querySelector('.category-submit button');
 
   dataSubmitButton.onclick = () => {
-    console.log(budgetSuccess.style.animationName);
     let categoryInput = addTransactionCategorySelect.value,
       amountInput = parseInt(addTransactionPopup.querySelector('.category-value input').value),
       commentInput = addTransactionPopup.querySelector('.category-info input').value,
@@ -407,10 +513,7 @@ const init = () => {
       localStorage.setItem(`${transactionsType}`, JSON.stringify(transactionsArr));
       categoriesList.innerHTML = '';
       addTransactionPopup.classList.toggle('closed');
-      budgetSuccess.style.animationName = 'slideDown';
-      setTimeout(() => {
-        budgetSuccess.style.animationName = '';
-      }, 3000);
+      notificationAlert(true);
       init();
     } else {
       alert('Fill the value and date');
